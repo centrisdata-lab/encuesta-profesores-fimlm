@@ -56,6 +56,7 @@ resolvieron así; conviene confirmarlos antes de la versión definitiva:
    tenido varias dificultades, convendría volverla de selección múltiple.
 9. **P18.** El rango más bajo es «Entre 4 y 8 horas»; no hay opción para menos de 4 horas.
 10. **P12.** Tiene la opción «No aplica / Trabajé de manera individual», aparte de la escala.
+11. **Área o profesión (pregunta 6).** No está en el Word: se agregó «¿En qué área o profesión?», que aparece al elegir «Profesional activo en otra área», para saber en qué área es profesional quien responde.
 
 ## Para conectarla después
 

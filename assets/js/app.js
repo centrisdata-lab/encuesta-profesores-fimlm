@@ -8,6 +8,7 @@
   var h = E.h;
   var S = E.ENCUESTA.secciones;
   var vista, progreso, vivo, tostada, tostadaT;
+  var actualizarFaltan = null; // solo existe mientras se ve una sección
 
   // ── Estado de avance ───────────────────────────────────────
   function hecha(i) { return E.estado.completadas.indexOf(i) !== -1 && E.erroresSeccion(S[i]).length === 0; }
@@ -131,15 +132,25 @@
     var editando = !!E.estado.terminada; // llegó desde "Revisar mis respuestas"
     E.registro = {};
     var faltan = h("div", { class: "faltan", role: "alert", hidden: true });
+    function textoFaltan(n, extra) {
+      faltan.innerHTML = E.icono("alerta", 18) + "<span></span>";
+      faltan.lastChild.textContent = (n === 1 ? "Falta 1 respuesta obligatoria en esta sección." :
+        "Faltan " + n + " respuestas obligatorias en esta sección.") + (extra || "");
+    }
+    // Tras el primer intento de continuar, el aviso sigue la cuenta y se va cuando ya no falta nada.
+    actualizarFaltan = function () {
+      if (faltan.hidden) return;
+      var n = E.erroresSeccion(s).length;
+      if (!n) faltan.hidden = true;
+      else textoFaltan(n);
+    };
 
     function continuar() {
       var errs = E.erroresSeccion(s);
       Object.keys(E.registro).forEach(E.limpiarError);
       if (errs.length) {
         errs.forEach(function (e) { E.mostrarError(e.campo, e.msg); });
-        var msg = errs.length === 1 ? "Falta 1 respuesta obligatoria en esta sección." : "Faltan " + errs.length + " respuestas obligatorias en esta sección.";
-        faltan.innerHTML = E.icono("alerta", 18) + "<span></span>";
-        faltan.lastChild.textContent = msg + " Te llevamos a la primera.";
+        textoFaltan(errs.length, " Te llevamos a la primera.");
         faltan.hidden = false;
         var r = E.registro[errs[0].campo];
         if (r) {
@@ -230,6 +241,7 @@
 
   function pintar() {
     var paso = E.estado.paso;
+    actualizarFaltan = null;
     vista.innerHTML = "";
     vista.appendChild(paso === "inicio" ? pintarInicio() : paso === "fin" ? pintarFin() : pintarSeccion(paso));
     document.body.setAttribute("data-pantalla", typeof paso === "number" ? "seccion" : paso);
@@ -246,7 +258,7 @@
 
     E.cargar();
     E.estado.paso = pasoValido(E.estado.paso);
-    E.alCambiar = pintarProgreso;
+    E.alCambiar = function () { pintarProgreso(); if (actualizarFaltan) actualizarFaltan(); };
     try { history.replaceState({ paso: E.estado.paso }, "", "#" + nombrePaso(E.estado.paso)); } catch (e) { /* ver irA */ }
     pintar();
 

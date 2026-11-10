@@ -99,23 +99,30 @@
     return { ta: ta, caja: h("div", { class: "area-caja" }, ta, cuenta) };
   }
 
-  /** Campo "¿Cuál?" que aparece al elegir "Otro". */
-  function campoOtro(p) {
-    var campo = p.id + "_otro";
-    var err = nodoError(campo);
-    var inp = entradaTexto(campo, { placeholder: p.otroPh, "aria-describedby": "err-" + campo }, function () { alResponder(p, campo); });
-    var caja = h("div", { class: "condicional", hidden: !E.pideOtro(p) },
-      h("label", { class: "sub-etiqueta", for: "in-" + campo }, p.otroEtiqueta, " ", h("span", { class: "req", "aria-hidden": "true" }, "*")),
-      inp, err);
-    registrar(campo, caja, err, function () { inp.focus(); });
+  /** Campos que aparecen según la opción elegida (p. ej. "Otro" -> "¿Cuál?").
+      Lo escrito se conserva aunque se cambie de opción y se vuelva. */
+  function camposDetalle(p) {
+    var items = (p.detalles || []).map(function (d) {
+      var campo = E.campoDetalle(p, d);
+      var err = nodoError(campo);
+      var inp = entradaTexto(campo, { placeholder: d.ph, "aria-describedby": "err-" + campo }, function () { alResponder(p, campo); });
+      var caja = h("div", { class: "condicional", hidden: E.detalle(p) !== d },
+        h("label", { class: "sub-etiqueta", for: "in-" + campo }, d.etiqueta, " ", h("span", { class: "req", "aria-hidden": "true" }, "*")),
+        inp, err);
+      registrar(campo, caja, err, function () { inp.focus(); });
+      return { d: d, campo: campo, caja: caja, inp: inp };
+    });
     return {
-      caja: caja,
+      cajas: items.map(function (x) { return x.caja; }),
       actualizar: function (enfocar) {
-        var ver = E.pideOtro(p);
-        if (caja.hidden === !ver) return;
-        caja.hidden = !ver;
-        if (!ver) E.limpiarError(campo);
-        else if (enfocar) inp.focus({ preventScroll: false });
+        var activo = E.detalle(p);
+        items.forEach(function (x) {
+          var ver = x.d === activo;
+          if (x.caja.hidden === !ver) return;
+          x.caja.hidden = !ver;
+          if (!ver) E.limpiarError(x.campo);
+          else if (enfocar) x.inp.focus({ preventScroll: false });
+        });
       }
     };
   }
@@ -166,27 +173,27 @@
 
     desplegable: function (p) {
       var err = nodoError(p.id);
-      var otro = p.otro ? campoOtro(p) : null;
+      var det = camposDetalle(p);
       var sel = E.crearSelector({
         id: p.id, titulo: p.placeholder, etiquetaId: "t-" + p.id, placeholder: p.placeholder,
         opciones: p.opciones || E.DATOS[p.fuente], buscable: !!p.buscable, buscarPh: p.buscarPh, unidad: p.unidad || ["opción", "opciones"],
         valor: E.r(p.id),
-        alElegir: function (v) { E.fijar(p.id, v); if (otro) otro.actualizar(true); alResponder(p, p.id); }
+        alElegir: function (v) { E.fijar(p.id, v); det.actualizar(true); alResponder(p, p.id); }
       });
-      var cuerpo = h("div", {}, sel.el, err, otro ? otro.caja : null);
+      var cuerpo = h("div", {}, sel.el, err, det.cajas);
       registrar(p.id, cuerpo, err, function () { sel.boton.focus(); });
       return marco(p, p.texto, cuerpo);
     },
 
     unica: function (p) {
       var err = nodoError(p.id);
-      var otro = p.otro ? campoOtro(p) : null;
+      var det = camposDetalle(p);
       var grupo = radios(p.id, "opciones cols-" + (p.columnas || 1), "t-" + p.id,
         p.opciones.map(function (o) {
           return { v: o.v, nodo: [h("span", { class: "radio-punto", "aria-hidden": "true" }), h("span", { class: "tarjeta-txt" }, o.t)] };
         }),
-        function () { if (otro) otro.actualizar(true); alResponder(p, p.id); });
-      var cuerpo = h("div", {}, grupo, err, otro ? otro.caja : null);
+        function () { det.actualizar(true); alResponder(p, p.id); });
+      var cuerpo = h("div", {}, grupo, err, det.cajas);
       registrar(p.id, cuerpo, err, primerRadio(grupo));
       return marco(p, p.texto, cuerpo);
     },

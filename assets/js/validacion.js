@@ -7,8 +7,12 @@
 (function (E) {
   "use strict";
 
-  /** ¿Se eligió "Otro" en una pregunta que pide especificar? */
-  E.pideOtro = function (p) { return !!p.otro && E.r(p.id) === "Otro"; };
+  /** Detalle que pide la opción elegida (p. ej. "Otro" -> "¿Cuál?"), o null. */
+  E.detalle = function (p) {
+    var v = E.r(p.id);
+    return (p.detalles || []).filter(function (d) { return d.si === v; })[0] || null;
+  };
+  E.campoDetalle = function (p, d) { return p.id + "_" + d.campo; };
 
   /** ¿Aplica la pregunta de seguimiento (p. ej. la de P2)? */
   E.aplicaSeguimiento = function (p) {
@@ -35,7 +39,8 @@
       case "desplegable":
       case "unica":
         if (p.requerida) falta(p.id, p.error);
-        if (E.pideOtro(p)) falta(p.id + "_otro", p.errorOtro);
+        var d = E.detalle(p);
+        if (d) falta(E.campoDetalle(p, d), d.error);
         break;
       case "grupoEscala":
         p.items.forEach(function (it) { falta(it.id, p.error); });
@@ -92,7 +97,8 @@
         return [{ etiqueta: p.texto, valor: [E.r(p.id + "_ciudad").trim(), E.r(p.id + "_pais")].filter(Boolean).join(", ") || sinDato }];
       case "desplegable":
       case "unica":
-        return [{ etiqueta: p.texto, valor: E.pideOtro(p) ? "Otro: " + E.r(p.id + "_otro").trim() : (E.r(p.id) || sinDato) }];
+        var det = E.detalle(p);
+        return [{ etiqueta: p.texto, valor: det ? E.r(p.id) + ": " + E.r(E.campoDetalle(p, det)).trim() : (E.r(p.id) || sinDato) }];
       case "escala":
         var filas = [{ etiqueta: p.texto, valor: textoEscala(E.r(p.id)) || sinDato }];
         if (E.aplicaSeguimiento(p)) filas.push({ etiqueta: p.seguimiento.texto, valor: E.r(p.seguimiento.id).trim() || sinDato, sub: true });

@@ -8,8 +8,10 @@
    Tipos de pregunta:
      texto        campo de una línea
      paisCiudad   país (lista con buscador) + ciudad (texto)
-     desplegable  lista desplegable; `buscable` agrega buscador; `otro` abre un campo
-     unica        selección única en tarjetas; `otro` abre un campo
+     desplegable  lista desplegable; `buscable` agrega buscador
+     unica        selección única en tarjetas
+       `detalles` (en ambas): campo de texto que aparece al elegir cierta opción,
+       p. ej. "Otro" -> "¿Cuál?". Se guarda como <id>_<campo>.
      escala       acuerdo 1–5; `na` agrega la opción "No aplica"; `seguimiento` abre otra pregunta
      grupoEscala  varias afirmaciones con la misma escala 1–5 (P13)
      abierta      respuesta larga
@@ -21,6 +23,8 @@
      - Cuándo aparece la pregunta de seguimiento de P2 (aquí: respuestas 1, 2 o 3).
      - Las opciones de la última pregunta (aquí: Sí / No).
      - La numeración: las dos últimas preguntas repiten P15 y P16; se dejan como en el Word.
+     - "¿En qué área o profesión?" al elegir "Profesional activo en otra área" (pregunta 6):
+       NO está en el Word; se agregó a pedido para saber en qué área es profesional.
    ============================================================ */
 (function (E) {
   "use strict";
@@ -68,11 +72,16 @@
             texto: "En cuál país se desempeñó como profesor en esta convocatoria", fuente: "convocatorias",
             placeholder: "Selecciona el país o la convocatoria",
             error: "Elige el país en el que te desempeñaste como profesor." },
-          { id: "ocupacion", cod: "6", tipo: "unica", requerida: true, columnas: 2, otro: true,
+          { id: "ocupacion", cod: "6", tipo: "unica", requerida: true, columnas: 2,
             texto: "Ocupación / Perfil Profesional",
             opciones: opciones(["Docente de profesión", "Estudiante universitario", "Profesional activo en otra área", "Pensionado / Jubilado", "Otro"]),
-            otroEtiqueta: "¿Cuál es tu ocupación?", otroPh: "Escribe tu ocupación o perfil",
-            error: "Selecciona tu ocupación o perfil profesional.", errorOtro: "Escribe cuál es tu ocupación." }
+            detalles: [
+              { si: "Profesional activo en otra área", campo: "area", etiqueta: "¿En qué área o profesión?",
+                ph: "Ej.: Contaduría, Enfermería, Ingeniería de sistemas", error: "Escribe tu área o profesión." },
+              { si: "Otro", campo: "otro", etiqueta: "¿Cuál es tu ocupación?",
+                ph: "Escribe tu ocupación o perfil", error: "Escribe cuál es tu ocupación." }
+            ],
+            error: "Selecciona tu ocupación o perfil profesional." }
         ]
       },
       {
@@ -143,13 +152,13 @@
         preguntas: [
           escala("p15", "P15", "Conozco y manejo con seguridad las herramientas principales del Campus Virtual (como la consulta de materiales, el libro de calificaciones, las rúbricas y los foros)."),
           escala("p16", "P16", "Cuando se presentaron problemas técnicos, la respuesta y solución brindadas por el equipo de soporte fueron oportunas y eficaces."),
-          { id: "p17", cod: "P17", tipo: "desplegable", requerida: false, otro: true,
+          { id: "p17", cod: "P17", tipo: "desplegable", requerida: false,
             texto: "¿Qué retos o dificultades desde el punto de vista de las herramientas tecnológicas tuvo a lo largo de su experiencia como profesor?",
             opciones: opciones(["Correo electrónico institucional", "Recuperación de Contraseña", "Cargue del curso(s) para capacitarse como profesor", "Inicio de sesión en Campus", "Otro"]),
             placeholder: "Selecciona una opción",
             ayuda: "Si no tuviste dificultades, puedes dejarla sin responder.",
-            otroEtiqueta: "¿Cuál fue la dificultad?", otroPh: "Describe brevemente la dificultad",
-            errorOtro: "Cuéntanos cuál fue la dificultad." }
+            detalles: [{ si: "Otro", campo: "otro", etiqueta: "¿Cuál fue la dificultad?",
+              ph: "Describe brevemente la dificultad", error: "Cuéntanos cuál fue la dificultad." }] }
         ]
       },
       {
