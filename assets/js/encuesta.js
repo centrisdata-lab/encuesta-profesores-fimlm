@@ -23,15 +23,22 @@
      - Qué preguntas son obligatorias.
      - Cuándo aparece la pregunta de seguimiento de P2 (aquí: respuestas 1, 2 o 3).
      - Las opciones de la última pregunta (aquí: Sí / No).
-     - La numeración: las dos últimas preguntas repiten P15 y P16; se dejan como en el Word.
      - "¿En qué área o profesión?" al elegir "Profesional activo en otra área" (pregunta 6):
        NO está en el Word; se agregó a pedido para saber en qué área es profesional.
 
    Ajustes pedidos por quien hizo el Word, después de ver el prototipo:
-     - Pregunta 3: "Tiempo como Profesor Voluntario" (antes "como Voluntario"), para no
+     - Antigüedad (hoy pregunta 4): "Tiempo como Profesor Voluntario" (antes "como Voluntario"), para no
        confundirlo con el voluntariado de eventos.
      - P17: de selección múltiple (antes lista desplegable de una sola opción).
-     - P18: nueva opción "Entre 1,5 horas a 4 horas por semana".
+     - Horas por semana: nueva opción "Entre 1,5 horas a 4 horas por semana".
+
+   Ajustes propuestos por Claudia (equipo de la encuesta):
+     - "País al que pertenece el curso en el que participo" (antes "En cuál país se desempeñó
+       como profesor en esta convocatoria") pasa justo después del curso. Se dice "País o región"
+       porque entre las opciones hay regiones (Europa, Norteamérica, Cono Sur).
+     - Las horas por semana (antes P18) pasan a la sección A: describen el perfil y la dedicación.
+     - Al salir P18 de la sección G, sus preguntas se numeran seguido: P18 a P21. Esto corrige
+       también la numeración repetida del Word (las dos últimas eran P15 y P16).
    ============================================================ */
 (function (E) {
   "use strict";
@@ -60,7 +67,7 @@
         letra: "A", icono: "persona",
         titulo: "Datos básicos y de contexto",
         corto: "Datos básicos",
-        sub: "Cuéntanos quién eres y en qué curso participaste.",
+        sub: "Cuéntanos quién eres, en qué curso participas y cuánto tiempo le dedicas.",
         preguntas: [
           { id: "nombre", cod: "1", tipo: "texto", requerida: true, texto: "Nombres y Apellidos",
             placeholder: "Ej.: María Fernanda Gómez Ruiz", autocomplete: "name", minPalabras: 2,
@@ -70,15 +77,15 @@
             placeholder: "Selecciona tu curso", buscarPh: "Buscar curso…", unidad: ["curso", "cursos"],
             ayuda: "Abre la lista y escribe para encontrarlo más rápido.",
             error: "Elige el curso en el que participas como profesor." },
-          { id: "antiguedad", cod: "3", tipo: "unica", requerida: true, columnas: 2,
+          { id: "paisConvocatoria", cod: "3", tipo: "desplegable", requerida: true,
+            texto: "País o región al que pertenece el curso en el que participo", fuente: "convocatorias",
+            placeholder: "Selecciona el país o la región",
+            error: "Elige el país o la región al que pertenece tu curso." },
+          { id: "antiguedad", cod: "4", tipo: "unica", requerida: true, columnas: 2,
             texto: "Antigüedad o Tiempo como Profesor Voluntario en la Fundación",
             opciones: opciones(["Menos de 6 meses (Primera vez)", "De 6 meses a 1 año", "Más de 1 año a 2 años", "Más de 2 años"]),
             error: "Selecciona cuánto tiempo llevas como profesor voluntario." },
-          { id: "residencia", cod: "4", tipo: "paisCiudad", requerida: true, texto: "País y Ciudad de Residencia" },
-          { id: "paisConvocatoria", cod: "5", tipo: "desplegable", requerida: true,
-            texto: "En cuál país se desempeñó como profesor en esta convocatoria", fuente: "convocatorias",
-            placeholder: "Selecciona el país o la convocatoria",
-            error: "Elige el país en el que te desempeñaste como profesor." },
+          { id: "residencia", cod: "5", tipo: "paisCiudad", requerida: true, texto: "País y Ciudad de Residencia" },
           { id: "ocupacion", cod: "6", tipo: "unica", requerida: true, columnas: 2,
             texto: "Ocupación / Perfil Profesional",
             opciones: opciones(["Docente de profesión", "Estudiante universitario", "Profesional activo en otra área", "Pensionado / Jubilado", "Otro"]),
@@ -88,7 +95,11 @@
               { si: "Otro", campo: "otro", etiqueta: "¿Cuál es tu ocupación?",
                 ph: "Escribe tu ocupación o perfil", error: "Escribe cuál es tu ocupación." }
             ],
-            error: "Selecciona tu ocupación o perfil profesional." }
+            error: "Selecciona tu ocupación o perfil profesional." },
+          { id: "horas", cod: "7", tipo: "unica", requerida: true,
+            texto: "En promedio, ¿cuántas horas a la semana destinas a las actividades como profesor voluntario (preparación de clases, ejecución de la clase, valoración de estudiantes y reuniones adicionales)?",
+            opciones: opciones(["Entre 1,5 horas a 4 horas por semana", "Entre 4 y 8 horas por semana", "Entre 9 y 12 horas por semana", "Más de 12 horas por semana"]),
+            error: "Selecciona un rango de horas." }
         ]
       },
       {
@@ -173,22 +184,17 @@
         corto: "Mejora continua",
         sub: "Ya casi terminas. Tus ideas nos ayudan a mejorar; las preguntas abiertas son opcionales.",
         preguntas: [
-          { id: "p18", cod: "P18", tipo: "unica", requerida: true,
-            texto: "En promedio, ¿cuántas horas a la semana destinas a las actividades como profesor voluntario (preparación de clases, ejecución de la clase, valoración de estudiantes y reuniones adicionales)?",
-            opciones: opciones(["Entre 1,5 horas a 4 horas por semana", "Entre 4 y 8 horas por semana", "Entre 9 y 12 horas por semana", "Más de 12 horas por semana"]),
-            error: "Selecciona un rango de horas." },
-          { id: "p19", cod: "P19", tipo: "abierta", requerida: false,
+          { id: "p19", cod: "P18", tipo: "abierta", requerida: false,
             texto: "¿Qué sugerencia específica tienes para mejorar los materiales didácticos, la plataforma o la dinámica de las clases en vivo?",
             placeholder: "Escribe aquí tu sugerencia…" },
-          { id: "p20", cod: "P20", tipo: "abierta", requerida: false,
+          { id: "p20", cod: "P19", tipo: "abierta", requerida: false,
             texto: "¿Sobre qué temas o áreas te gustaría que la Fundación diseñara nuevos cursos para ser ofrecidos en el futuro?",
             placeholder: "Escribe aquí los temas o áreas…" },
-          // En el Word estas dos preguntas repiten los números P15 y P16. Se conservan así a propósito.
-          { id: "recomendacion", cod: "P15", tipo: "nps", requerida: true,
+          { id: "recomendacion", cod: "P20", tipo: "nps", requerida: true,
             texto: "¿Qué tan probable es que recomiendes la experiencia de ser profesor(a) voluntario(a) en el Campus Virtual de la Fundación a un colega, amigo(a) o profesional conocido?",
             min: "Nada probable", max: "Extremadamente probable",
             error: "Elige un número del 0 al 10." },
-          { id: "convocatoria2027", cod: "P16", tipo: "sino", requerida: true,
+          { id: "convocatoria2027", cod: "P21", tipo: "sino", requerida: true,
             texto: "¿Consideraría ser profesor para la siguiente convocatoria (2027)?",
             error: "Selecciona Sí o No." }
         ]

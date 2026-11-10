@@ -44,7 +44,12 @@
 
     function filtrar(q) {
       var n = E.norm(q || "").trim();
-      visibles = cfg.opciones.filter(function (o) { return !n || E.norm(o.t).indexOf(n) !== -1; });
+      // Cada palabra escrita debe aparecer, en cualquier orden: "ingles 2" encuentra "Inglés Nivel 2"
+      var palabras = n.split(/\s+/).filter(Boolean);
+      visibles = cfg.opciones.filter(function (o) {
+        var t = E.norm(o.t);
+        return palabras.every(function (w) { return t.indexOf(w) !== -1; });
+      });
       lista.innerHTML = "";
       var grupo = null;
       visibles.forEach(function (o, i) {
