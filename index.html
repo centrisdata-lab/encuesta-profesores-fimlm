@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Encuesta de Satisfacción 2026 · Profesores Campus (prototipo)</title>
+  <meta name="description" content="Prototipo de la Encuesta de Satisfacción 2026 para profesores del Campus Virtual. Versión de visualización y prueba: no envía información.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#1a3c6e">
+
+  <!-- Vista previa al compartir el enlace (WhatsApp, redes). Rutas absolutas: ajustar si cambia el repositorio. -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_CO">
+  <meta property="og:site_name" content="Campus 2026 · Fundación Internacional María Luisa de Moreno">
+  <meta property="og:title" content="Encuesta de Satisfacción 2026 · Profesores Campus">
+  <meta property="og:description" content="Prototipo de visualización y prueba de la encuesta para profesores del Campus Virtual.">
+  <meta property="og:url" content="https://centrisdata-lab.github.io/encuesta-profesores-fimlm/">
+  <meta property="og:image" content="https://centrisdata-lab.github.io/encuesta-profesores-fimlm/assets/img/og-encuesta.jpg">
+  <meta name="twitter:image" content="https://centrisdata-lab.github.io/encuesta-profesores-fimlm/assets/img/og-encuesta.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/estilos.css">
+</head>
+<body data-pantalla="inicio">
+  <a class="saltar" href="#vista">Saltar al contenido</a>
+
+  <div class="franja-prototipo" role="note">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6L4.5 19a2 2 0 0 0 1.8 3h11.4a2 2 0 0 0 1.8-3L14 9V3"/></svg>
+    <span><b>Prototipo</b> de visualización y prueba · no envía información</span>
+  </div>
+
+  <header class="sitio-cab">
+    <div class="sitio-cab-int">
+      <img class="sitio-logo" src="assets/img/logo-campus.png" alt="Campus · Fundación Internacional María Luisa de Moreno" width="300" height="195">
+      <div class="sitio-titulos">
+        <p class="sitio-ceja">Gestión Campus 2026</p>
+        <h1>Encuesta de Satisfacción 2026</h1>
+        <p class="sitio-sub">Profesores Campus</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="progreso" id="progreso" hidden></div>
+
+  <main id="vista" tabindex="-1">
+    <noscript>
+      <div class="panel">
+        <h2>Activa JavaScript para responder la encuesta</h2>
+        <p>Esta encuesta necesita JavaScript para mostrar las preguntas y guardar tu avance.</p>
+      </div>
+    </noscript>
+  </main>
+
+  <footer class="sitio-pie">
+    <button type="button" class="btn enlace" id="btn-reiniciar" hidden>Borrar mis respuestas y empezar de nuevo</button>
+    <p>Fundación Internacional María Luisa de Moreno · Campus 2026</p>
+    <p class="pie-nota">Prototipo de visualización y prueba. No está conectado a ningún sistema de la Fundación.</p>
+  </footer>
+
+  <div id="vivo" class="solo-lector" aria-live="polite"></div>
+  <div id="tostada" class="tostada" aria-hidden="true"></div>
+
+  <dialog id="dlg-reinicio" class="dialogo" aria-labelledby="dlg-titulo">
+    <h2 id="dlg-titulo">¿Empezar de nuevo?</h2>
+    <p>Se borrarán las respuestas guardadas en este dispositivo. Esta acción no se puede deshacer.</p>
+    <div class="fila-botones fin-fila">
+      <button type="button" class="btn fantasma" id="dlg-cancelar">Cancelar</button>
+      <button type="button" class="btn peligro" id="dlg-aceptar">Sí, borrar y empezar</button>
+    </div>
+  </dialog>
+
+  <script src="assets/js/base.js"></script>
+  <script src="assets/js/datos.js"></script>
+  <script src="assets/js/encuesta.js"></script>
+  <script src="assets/js/estado.js"></script>
+  <script src="assets/js/validacion.js"></script>
+  <script src="assets/js/selector.js"></script>
+  <script src="assets/js/campos.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
