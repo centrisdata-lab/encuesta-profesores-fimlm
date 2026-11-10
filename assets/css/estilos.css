@@ -236,6 +236,16 @@ main { max-width: 760px; margin: 0 auto; padding: 24px 24px 40px; outline: none;
 .radio-oculto:checked + .tarjeta-caja .radio-punto { border-color: var(--blue); }
 .radio-oculto:checked + .tarjeta-caja .radio-punto::after { transform: scale(1); }
 
+/* Casilla de selección múltiple: cuadrada, para distinguirla del círculo de selección única */
+.check-caja {
+  width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
+  border: 2px solid #a9bbdb; background: var(--white); color: transparent;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.check-caja .ico { stroke-width: 3.2; }
+.radio-oculto:checked + .tarjeta-caja .check-caja { background: var(--blue); border-color: var(--blue); color: #fff; }
+
 .opciones { display: grid; gap: 10px; }
 .opciones.cols-2 { grid-template-columns: 1fr 1fr; }
 

@@ -7,10 +7,13 @@
 (function (E) {
   "use strict";
 
-  /** Detalle que pide la opción elegida (p. ej. "Otro" -> "¿Cuál?"), o null. */
-  E.detalle = function (p) {
-    var v = E.r(p.id);
-    return (p.detalles || []).filter(function (d) { return d.si === v; })[0] || null;
+  /** Opciones elegidas: una sola, o varias en selección múltiple. */
+  E.elegidas = function (p) { return p.tipo === "multiple" ? E.lista(p.id) : (E.tiene(p.id) ? [E.r(p.id)] : []); };
+
+  /** Detalles que piden las opciones elegidas (p. ej. "Otro" -> "¿Cuál?"). */
+  E.detallesActivos = function (p) {
+    var elegidas = E.elegidas(p);
+    return (p.detalles || []).filter(function (d) { return elegidas.indexOf(d.si) !== -1; });
   };
   E.campoDetalle = function (p, d) { return p.id + "_" + d.campo; };
 
@@ -38,9 +41,9 @@
         break;
       case "desplegable":
       case "unica":
+      case "multiple":
         if (p.requerida) falta(p.id, p.error);
-        var d = E.detalle(p);
-        if (d) falta(E.campoDetalle(p, d), d.error);
+        E.detallesActivos(p).forEach(function (d) { falta(E.campoDetalle(p, d), d.error); });
         break;
       case "grupoEscala":
         p.items.forEach(function (it) { falta(it.id, p.error); });
@@ -97,8 +100,13 @@
         return [{ etiqueta: p.texto, valor: [E.r(p.id + "_ciudad").trim(), E.r(p.id + "_pais")].filter(Boolean).join(", ") || sinDato }];
       case "desplegable":
       case "unica":
-        var det = E.detalle(p);
-        return [{ etiqueta: p.texto, valor: det ? E.r(p.id) + ": " + E.r(E.campoDetalle(p, det)).trim() : (E.r(p.id) || sinDato) }];
+      case "multiple":
+        var activos = E.detallesActivos(p);
+        var textos = E.elegidas(p).map(function (v) {
+          var d = activos.filter(function (x) { return x.si === v; })[0];
+          return d ? v + ": " + E.r(E.campoDetalle(p, d)).trim() : v;
+        });
+        return [{ etiqueta: p.texto, valor: textos.join("; ") || sinDato }];
       case "escala":
         var filas = [{ etiqueta: p.texto, valor: textoEscala(E.r(p.id)) || sinDato }];
         if (E.aplicaSeguimiento(p)) filas.push({ etiqueta: p.seguimiento.texto, valor: E.r(p.seguimiento.id).trim() || sinDato, sub: true });

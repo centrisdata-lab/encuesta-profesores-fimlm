@@ -106,7 +106,7 @@
       var campo = E.campoDetalle(p, d);
       var err = nodoError(campo);
       var inp = entradaTexto(campo, { placeholder: d.ph, "aria-describedby": "err-" + campo }, function () { alResponder(p, campo); });
-      var caja = h("div", { class: "condicional", hidden: E.detalle(p) !== d },
+      var caja = h("div", { class: "condicional", hidden: E.detallesActivos(p).indexOf(d) === -1 },
         h("label", { class: "sub-etiqueta", for: "in-" + campo }, d.etiqueta, " ", h("span", { class: "req", "aria-hidden": "true" }, "*")),
         inp, err);
       registrar(campo, caja, err, function () { inp.focus(); });
@@ -115,9 +115,9 @@
     return {
       cajas: items.map(function (x) { return x.caja; }),
       actualizar: function (enfocar) {
-        var activo = E.detalle(p);
+        var activos = E.detallesActivos(p);
         items.forEach(function (x) {
-          var ver = x.d === activo;
+          var ver = activos.indexOf(x.d) !== -1;
           if (x.caja.hidden === !ver) return;
           x.caja.hidden = !ver;
           if (!ver) E.limpiarError(x.campo);
@@ -193,6 +193,34 @@
           return { v: o.v, nodo: [h("span", { class: "radio-punto", "aria-hidden": "true" }), h("span", { class: "tarjeta-txt" }, o.t)] };
         }),
         function () { det.actualizar(true); alResponder(p, p.id); });
+      var cuerpo = h("div", {}, grupo, err, det.cajas);
+      registrar(p.id, cuerpo, err, primerRadio(grupo));
+      return marco(p, p.texto, cuerpo);
+    },
+
+    // Selección múltiple: casillas reales (checkbox), con la misma tarjeta que las opciones únicas
+    multiple: function (p) {
+      var err = nodoError(p.id);
+      var det = camposDetalle(p);
+      var elegidas = E.lista(p.id);
+      var grupo = h("div", { class: "opciones cols-" + (p.columnas || 1), role: "group", "aria-labelledby": "t-" + p.id,
+        "aria-describedby": describe(p, p.id) });
+      p.opciones.forEach(function (o, i) {
+        var inp = h("input", {
+          type: "checkbox", name: p.id, id: "c-" + p.id + "-" + i, value: o.v, class: "radio-oculto",
+          onchange: function () {
+            var vals = [].filter.call(grupo.querySelectorAll("input"), function (x) { return x.checked; })
+              .map(function (x) { return x.value; });
+            E.fijar(p.id, vals);
+            det.actualizar(inp.checked);
+            alResponder(p, p.id);
+          }
+        });
+        inp.checked = elegidas.indexOf(o.v) !== -1;
+        grupo.appendChild(h("label", { class: "tarjeta" }, inp, h("span", { class: "tarjeta-caja" },
+          h("span", { class: "check-caja", "aria-hidden": "true", html: E.icono("check", 14) }),
+          h("span", { class: "tarjeta-txt" }, o.t))));
+      });
       var cuerpo = h("div", {}, grupo, err, det.cajas);
       registrar(p.id, cuerpo, err, primerRadio(grupo));
       return marco(p, p.texto, cuerpo);

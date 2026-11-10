@@ -10,7 +10,8 @@
      paisCiudad   país (lista con buscador) + ciudad (texto)
      desplegable  lista desplegable; `buscable` agrega buscador
      unica        selección única en tarjetas
-       `detalles` (en ambas): campo de texto que aparece al elegir cierta opción,
+     multiple     selección múltiple en tarjetas con casillas (se guarda como lista)
+       `detalles` (en las tres): campo de texto que aparece al elegir cierta opción,
        p. ej. "Otro" -> "¿Cuál?". Se guarda como <id>_<campo>.
      escala       acuerdo 1–5; `na` agrega la opción "No aplica"; `seguimiento` abre otra pregunta
      grupoEscala  varias afirmaciones con la misma escala 1–5 (P13)
@@ -25,6 +26,12 @@
      - La numeración: las dos últimas preguntas repiten P15 y P16; se dejan como en el Word.
      - "¿En qué área o profesión?" al elegir "Profesional activo en otra área" (pregunta 6):
        NO está en el Word; se agregó a pedido para saber en qué área es profesional.
+
+   Ajustes pedidos por quien hizo el Word, después de ver el prototipo:
+     - Pregunta 3: "Tiempo como Profesor Voluntario" (antes "como Voluntario"), para no
+       confundirlo con el voluntariado de eventos.
+     - P17: de selección múltiple (antes lista desplegable de una sola opción).
+     - P18: nueva opción "Entre 1,5 horas a 4 horas por semana".
    ============================================================ */
 (function (E) {
   "use strict";
@@ -64,9 +71,9 @@
             ayuda: "Abre la lista y escribe para encontrarlo más rápido.",
             error: "Elige el curso en el que participas como profesor." },
           { id: "antiguedad", cod: "3", tipo: "unica", requerida: true, columnas: 2,
-            texto: "Antigüedad o Tiempo como Voluntario en la Fundación",
+            texto: "Antigüedad o Tiempo como Profesor Voluntario en la Fundación",
             opciones: opciones(["Menos de 6 meses (Primera vez)", "De 6 meses a 1 año", "Más de 1 año a 2 años", "Más de 2 años"]),
-            error: "Selecciona cuánto tiempo llevas como voluntario." },
+            error: "Selecciona cuánto tiempo llevas como profesor voluntario." },
           { id: "residencia", cod: "4", tipo: "paisCiudad", requerida: true, texto: "País y Ciudad de Residencia" },
           { id: "paisConvocatoria", cod: "5", tipo: "desplegable", requerida: true,
             texto: "En cuál país se desempeñó como profesor en esta convocatoria", fuente: "convocatorias",
@@ -152,11 +159,10 @@
         preguntas: [
           escala("p15", "P15", "Conozco y manejo con seguridad las herramientas principales del Campus Virtual (como la consulta de materiales, el libro de calificaciones, las rúbricas y los foros)."),
           escala("p16", "P16", "Cuando se presentaron problemas técnicos, la respuesta y solución brindadas por el equipo de soporte fueron oportunas y eficaces."),
-          { id: "p17", cod: "P17", tipo: "desplegable", requerida: false,
+          { id: "p17", cod: "P17", tipo: "multiple", requerida: false,
             texto: "¿Qué retos o dificultades desde el punto de vista de las herramientas tecnológicas tuvo a lo largo de su experiencia como profesor?",
             opciones: opciones(["Correo electrónico institucional", "Recuperación de Contraseña", "Cargue del curso(s) para capacitarse como profesor", "Inicio de sesión en Campus", "Otro"]),
-            placeholder: "Selecciona una opción",
-            ayuda: "Si no tuviste dificultades, puedes dejarla sin responder.",
+            ayuda: "Puedes marcar varias opciones. Si no tuviste dificultades, puedes dejarla sin responder.",
             detalles: [{ si: "Otro", campo: "otro", etiqueta: "¿Cuál fue la dificultad?",
               ph: "Describe brevemente la dificultad", error: "Cuéntanos cuál fue la dificultad." }] }
         ]
@@ -169,7 +175,7 @@
         preguntas: [
           { id: "p18", cod: "P18", tipo: "unica", requerida: true,
             texto: "En promedio, ¿cuántas horas a la semana destinas a las actividades como profesor voluntario (preparación de clases, ejecución de la clase, valoración de estudiantes y reuniones adicionales)?",
-            opciones: opciones(["Entre 4 y 8 horas por semana", "Entre 9 y 12 horas por semana", "Más de 12 horas por semana"]),
+            opciones: opciones(["Entre 1,5 horas a 4 horas por semana", "Entre 4 y 8 horas por semana", "Entre 9 y 12 horas por semana", "Más de 12 horas por semana"]),
             error: "Selecciona un rango de horas." },
           { id: "p19", cod: "P19", tipo: "abierta", requerida: false,
             texto: "¿Qué sugerencia específica tienes para mejorar los materiales didácticos, la plataforma o la dinámica de las clases en vivo?",

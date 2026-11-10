@@ -43,8 +43,16 @@
   /** ¿Hay algo escrito o elegido en ese campo? */
   E.tiene = function (campo) { return E.r(campo).trim() !== ""; };
 
+  /** Respuesta de selección múltiple como lista (acepta un valor suelto guardado antes). */
+  E.lista = function (campo) {
+    var v = E.estado.respuestas[campo];
+    if (Array.isArray(v)) return v.slice();
+    return v === undefined || v === null || v === "" ? [] : [String(v)];
+  };
+
   E.fijar = function (campo, valor) {
-    if (valor === "" || valor === null || valor === undefined) delete E.estado.respuestas[campo];
+    var vacio = valor === "" || valor === null || valor === undefined || (Array.isArray(valor) && !valor.length);
+    if (vacio) delete E.estado.respuestas[campo];
     else E.estado.respuestas[campo] = valor;
     E.guardar();
   };

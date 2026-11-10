@@ -52,11 +52,12 @@ resolvieron así; conviene confirmarlos antes de la versión definitiva:
 6. **«País y Ciudad de Residencia».** Se dividió en dos campos: país (lista con buscador) y ciudad (texto).
 7. **«En cuál país se desempeñó como profesor».** Se ofrecen las convocatorias 2026 (Colombia, España, Europa,
    Norteamérica, Australia, Cono Sur, Venezuela, México, Panamá, Perú y Ecuador).
-8. **P17.** El Word la marca como lista desplegable, así que permite una sola opción. Si un profesor puede haber
-   tenido varias dificultades, convendría volverla de selección múltiple.
-9. **P18.** El rango más bajo es «Entre 4 y 8 horas»; no hay opción para menos de 4 horas.
+8. **P17 (ajustada).** En el Word era una lista desplegable de una sola opción. A pedido de quien hizo el Word,
+   ahora es de selección múltiple.
+9. **P18 (ajustada).** Se agregó la opción «Entre 1,5 horas a 4 horas por semana», pedida por quien hizo el Word.
 10. **P12.** Tiene la opción «No aplica / Trabajé de manera individual», aparte de la escala.
 11. **Área o profesión (pregunta 6).** No está en el Word: se agregó «¿En qué área o profesión?», que aparece al elegir «Profesional activo en otra área», para saber en qué área es profesional quien responde.
+12. **Pregunta 3 (ajustada).** Dice «Tiempo como Profesor Voluntario» en vez de «como Voluntario», para que no se confunda con el voluntariado de eventos (pedido de quien hizo el Word).
 
 ## Para conectarla después
 
